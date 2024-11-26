@@ -36,17 +36,19 @@ public class User {
 
    private String role;
 
+   private Boolean enabled;
+
    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
    private LocalDateTime createdDateTime;
 
    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
    private LocalDateTime modifiedDateTime;
 
-   @OneToOne(mappedBy = "user")
+   @OneToOne(mappedBy = "user", cascade = CascadeType.ALL,orphanRemoval = true)
    @JsonIgnore
    private Cart cart;
 
-   @OneToOne(mappedBy = "user")
+   @OneToOne(mappedBy = "user", cascade = CascadeType.ALL,orphanRemoval = true)
    @JsonIgnore
    private VerificationToken verificationToken;
 }

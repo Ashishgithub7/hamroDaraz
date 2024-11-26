@@ -1,13 +1,16 @@
 package com.ecommerce.hamroDaraz.Controller;
 
+import ch.qos.logback.core.model.Model;
 import com.ecommerce.hamroDaraz.DTO.AdminDTO;
 import com.ecommerce.hamroDaraz.DTO.UserDTO;
 import com.ecommerce.hamroDaraz.Entity.User;
+import com.ecommerce.hamroDaraz.Entity.VerificationToken;
 import com.ecommerce.hamroDaraz.MessageConstant.ErrorMessageConstant;
 import com.ecommerce.hamroDaraz.Repository.AdminRepo;
 import com.ecommerce.hamroDaraz.Repository.UserRepo;
 import com.ecommerce.hamroDaraz.Service.AdminService;
 import com.ecommerce.hamroDaraz.Service.UserService;
+import com.ecommerce.hamroDaraz.ServiceImpl.VerificationTokenServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +37,14 @@ public class AuthController {
     @Autowired
     private AdminService adminService;
 
+    @Autowired
+    private AdminRepo adminRepo;
+
+    @Autowired
+    private VerificationTokenServiceImpl verificationTokenService;
+
     private static final Logger logInfo = LoggerFactory.getLogger(AuthController.class);
+
 
     @PostMapping("/registerUser")
     public ResponseEntity<?> registerUser(@RequestBody UserDTO userDTO) {
@@ -109,6 +119,25 @@ public class AuthController {
 
     }
 
+    @GetMapping("/verify-otp")
+    public String verifyOtp(@RequestParam(value = "otp", required = false) String otp, Model model) {
+        VerificationToken verificationToken = verificationTokenService.getToken(otp);
+
+        if (verificationToken == null) {
+//            model.addAttribute("message", "Invalid or expired OTP");
+            return "otpError";
+        }
+
+        User user = verificationToken.getUser();
+        user.setEnabled(true);
+        userRepo.save(user);
+
+        verificationTokenService.deleteToken(verificationToken);
+
+//        model.addAttribute("message", "OTP verified successfully. Your account is now active.");
+        return "verified";
+    }
+
     @PostMapping("/registerAdmin")
     public ResponseEntity<?> registerAdmin(@RequestBody AdminDTO adminDTO) {
 
@@ -147,7 +176,7 @@ public class AuthController {
                     .body(Map.of("status", "error", "message", errors));
         }
 
-        if(userRepo.existsByEmail(adminDTO.getEmail())){
+        if(adminRepo.existsByEmail(adminDTO.getEmail())){
             logInfo.error("User with same email already exists");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("status", "error", "message", ErrorMessageConstant.EMAIL_ALREADY_EXISTS));

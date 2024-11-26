@@ -20,11 +20,12 @@ public class VerificationToken {
     private Long id;
 
     private String token;
+
     private LocalDateTime createdDate;
 
     private LocalDateTime expiredDate;
 
-    @OneToOne()
+    @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
 }

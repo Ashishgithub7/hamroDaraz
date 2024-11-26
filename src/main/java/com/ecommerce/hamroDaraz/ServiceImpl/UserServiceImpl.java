@@ -38,6 +38,7 @@ public class UserServiceImpl implements UserService {
     user.setPassword(this.passwordEncoder.encode(user.getPassword()));
     user.setCreatedDateTime(LocalDateTime.now());
     user.setRole("Buyer");
+    user.setEnabled(false);  // make the account un-enabled at first
 
     Cart myCart= new Cart();  // create new cart while registering new user
     myCart.setTotalPrice(0L);
