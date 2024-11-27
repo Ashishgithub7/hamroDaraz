@@ -51,4 +51,8 @@ public class User {
    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL,orphanRemoval = true)
    @JsonIgnore
    private VerificationToken verificationToken;
+
+   @OneToOne(mappedBy = "user-id", cascade = CascadeType.ALL,orphanRemoval = true)
+   @JsonIgnore
+   private Shop shop;
 }

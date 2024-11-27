@@ -31,7 +31,7 @@ public class VerificationTokenServiceImpl {
         token.setUser(user);
         token.setToken(otp);
         token.setCreatedDate(LocalDateTime.now());
-        token.setExpiredDate(LocalDateTime.now().plusMinutes(OTP_EXPIRATION_MINUTES));
+        token.setExpiryDate(LocalDateTime.now().plusMinutes(OTP_EXPIRATION_MINUTES));
         return verificationTokenRepository.save(token);
     }
 

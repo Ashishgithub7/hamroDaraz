@@ -24,4 +24,6 @@ public class ErrorMessageConstant {
 
     public static final String PHONE_NUMBER_ALREADY_EXISTS="User with this phone number already exists";
     public static final String EMAIL_ALREADY_EXISTS="User with this email already exists";
+
+    public static final String LOGIN_PASSWORD_ERROR="Password does not match";
 }

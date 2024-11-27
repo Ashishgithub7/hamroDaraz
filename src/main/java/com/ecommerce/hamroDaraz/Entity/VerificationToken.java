@@ -23,7 +23,7 @@ public class VerificationToken {
 
     private LocalDateTime createdDate;
 
-    private LocalDateTime expiredDate;
+    private LocalDateTime expiryDate;
 
     @OneToOne
     @JoinColumn(name = "user_id")

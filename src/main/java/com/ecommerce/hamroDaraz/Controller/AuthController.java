@@ -3,6 +3,7 @@ package com.ecommerce.hamroDaraz.Controller;
 import ch.qos.logback.core.model.Model;
 import com.ecommerce.hamroDaraz.DTO.AdminDTO;
 import com.ecommerce.hamroDaraz.DTO.UserDTO;
+import com.ecommerce.hamroDaraz.DTO.LoginRequest;
 import com.ecommerce.hamroDaraz.Entity.User;
 import com.ecommerce.hamroDaraz.Entity.VerificationToken;
 import com.ecommerce.hamroDaraz.MessageConstant.ErrorMessageConstant;
@@ -15,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -148,12 +148,12 @@ public class AuthController {
             error.put("usernameError", ErrorMessageConstant.USERNAME_ERROR);
             errors.add(error);
         }
-        if (adminDTO.getPassword() == null || adminDTO.getPassword().isEmpty()) {
+        if (adminDTO.getPassword() == null || adminDTO.getPassword().isEmpty() || adminDTO.getPassword().length() < 8 || adminDTO.getPassword().length() > 20 ){
             Map<String,String> error = new HashMap<>();
             error.put("passwordError", ErrorMessageConstant.PASSWORD_ERROR);
             errors.add(error);
         }
-        if(adminDTO.getEmail() == null || adminDTO.getEmail().isEmpty()) {
+        if(adminDTO.getEmail() == null || adminDTO.getEmail().isEmpty() || !adminDTO.getEmail().matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")) {
             Map<String,String> error = new HashMap<>();
             error.put("emailError", ErrorMessageConstant.EMAIL_ERROR);
             errors.add(error);
@@ -183,5 +183,29 @@ public class AuthController {
         }
 
         return ResponseEntity.ok(adminService.registerAdmin(adminDTO));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> userLogin(@RequestBody LoginRequest request){
+        List<Map<String, String>> errors = new ArrayList<>();
+        if (request.getEmail() == null || request.getEmail().isEmpty() || request.getEmail().matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")) {
+            Map<String, String> error = new HashMap<>();
+            error.put("emailError", ErrorMessageConstant.EMAIL_ERROR);
+            errors.add(error);
+        }
+
+        if (request.getPassword() == null || request.getPassword().isEmpty() || request.getPassword().length() < 8 || request.getPassword().length() > 20) {
+            Map<String, String> error = new HashMap<>();
+            error.put("passwordError", ErrorMessageConstant.LOGIN_PASSWORD_ERROR);
+            errors.add(error);
+        }
+
+        if (!errors.isEmpty()) {
+            logInfo.error(errors.toString());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("status", "error", "message", errors));
+        }
+
+        return ResponseEntity.ok(userService.userLogin(request));
     }
 }
