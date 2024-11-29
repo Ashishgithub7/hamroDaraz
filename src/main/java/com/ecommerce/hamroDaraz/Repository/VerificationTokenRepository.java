@@ -10,5 +10,8 @@ import java.util.List;
 
 public interface VerificationTokenRepository extends JpaRepository<VerificationToken,Long> {
     VerificationToken findByToken(String otp);
+
     List<VerificationToken> findByExpiryDateBefore(LocalDateTime now);
+
+    void deleteById(Long aLong);
 }

@@ -9,9 +9,11 @@ import com.ecommerce.hamroDaraz.Entity.VerificationToken;
 import com.ecommerce.hamroDaraz.MessageConstant.ErrorMessageConstant;
 import com.ecommerce.hamroDaraz.Repository.AdminRepo;
 import com.ecommerce.hamroDaraz.Repository.UserRepo;
+import com.ecommerce.hamroDaraz.Repository.VerificationTokenRepository;
 import com.ecommerce.hamroDaraz.Service.AdminService;
 import com.ecommerce.hamroDaraz.Service.UserService;
 import com.ecommerce.hamroDaraz.ServiceImpl.VerificationTokenServiceImpl;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +44,9 @@ public class AuthController {
 
     @Autowired
     private VerificationTokenServiceImpl verificationTokenService;
+
+    @Autowired
+    private VerificationTokenRepository verificationTokenRepository;
 
     private static final Logger logInfo = LoggerFactory.getLogger(AuthController.class);
 
@@ -119,6 +124,7 @@ public class AuthController {
 
     }
 
+    @Transactional
     @GetMapping("/verify-otp")
     public String verifyOtp(@RequestParam(value = "otp", required = false) String otp, Model model) {
         VerificationToken verificationToken = verificationTokenService.getToken(otp);
@@ -133,6 +139,7 @@ public class AuthController {
         userRepo.save(user);
 
         verificationTokenService.deleteToken(verificationToken);
+//        verificationTokenRepository.delete(verificationToken);
 
 //        model.addAttribute("message", "OTP verified successfully. Your account is now active.");
         return "verified";

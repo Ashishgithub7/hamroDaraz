@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @Table
 public class User {
 
-    @jakarta.persistence.Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
    private Long Id;
 
@@ -45,14 +45,11 @@ public class User {
    private LocalDateTime modifiedDateTime;
 
    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL,orphanRemoval = true)
-   @JsonIgnore
    private Cart cart;
 
    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL,orphanRemoval = true)
-   @JsonIgnore
    private VerificationToken verificationToken;
 
-   @OneToOne(mappedBy = "user-id", cascade = CascadeType.ALL,orphanRemoval = true)
-   @JsonIgnore
+   @OneToOne(mappedBy = "user", cascade = CascadeType.ALL,orphanRemoval = true)
    private Shop shop;
 }

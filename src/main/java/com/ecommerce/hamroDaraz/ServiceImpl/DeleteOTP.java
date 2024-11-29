@@ -25,8 +25,14 @@ public class DeleteOTP {
         List<VerificationToken> expiredTokens = verificationTokenRepository.findByExpiryDateBefore(now);
 
         for (VerificationToken token : expiredTokens) {
-            verificationTokenRepository.delete(token);
             User user = token.getUser();
-            userRepository.delete(user);}
+            if(user.getEnabled()){
+            verificationTokenRepository.delete(token);
+            }
+            else {
+            verificationTokenRepository.delete(token);
+            userRepository.delete(user);
+            }
+        }
 }
 }
