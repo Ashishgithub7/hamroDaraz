@@ -195,7 +195,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> userLogin(@RequestBody LoginRequest request){
         List<Map<String, String>> errors = new ArrayList<>();
-        if (request.getEmail() == null || request.getEmail().isEmpty() || request.getEmail().matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")) {
+        if (request.getEmail() == null || request.getEmail().isEmpty()) {
             Map<String, String> error = new HashMap<>();
             error.put("emailError", ErrorMessageConstant.EMAIL_ERROR);
             errors.add(error);

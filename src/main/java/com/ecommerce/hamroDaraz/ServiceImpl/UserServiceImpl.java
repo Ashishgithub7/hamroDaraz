@@ -83,7 +83,7 @@ public class UserServiceImpl implements UserService {
                 );
                 if (authentication.isAuthenticated()) {
                     response=modelMapper.map(user,UserLoginResponse.class);
-                    response.setToken(jwtTokenHelper.generateToken(user.getEmail(), "user"));
+                    response.setToken(jwtTokenHelper.generateToken(user.getEmail(), "user",user.getId()));
                     response.setMessage("Login successful");
                     response.setUserId(user.getId());
                     return new ResponseEntity<>(response, HttpStatus.OK);

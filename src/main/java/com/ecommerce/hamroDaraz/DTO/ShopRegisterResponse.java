@@ -1,5 +1,6 @@
 package com.ecommerce.hamroDaraz.DTO;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,5 +23,6 @@ public class ShopRegisterResponse {
 
     private String description;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH-mm")
     private LocalDateTime createdAt;
 }

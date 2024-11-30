@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 public class Shop {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotBlank(message = "Name cannot be blank")

@@ -12,9 +12,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ShopRegisterRequest {
 
-    @Id
-    private Long id;
-
     private String name;
 
     private String contactInfo;
@@ -22,6 +19,4 @@ public class ShopRegisterRequest {
     private String logoUrl;
 
     private String description;
-
-    private String token;
 }

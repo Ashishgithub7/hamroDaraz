@@ -63,6 +63,10 @@ public class JwtTokenHelper {
         return extractClaim(theToken, claims -> claims.get("userType", String.class));
     }
 
+    public Long extractUserIdFromToken(String theToken) {
+        return extractClaim(theToken, claims -> claims.get("userId", Long.class));
+    }
+
     private Claims getAllClaimsFromToken(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getSignedKey())
@@ -81,9 +85,10 @@ public class JwtTokenHelper {
         return expiration.before(new Date());
     }
 
-    public String generateToken(String userName, String userType) {
+    public String generateToken(String userName, String userType, Long userId) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("userType", userType); // Add user type to claims
+        claims.put("userType", userType);
+        claims.put("userId",userId);// Add user type to claims
         return doGenerateToken(claims, userName);
     }
 
