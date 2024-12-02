@@ -95,7 +95,7 @@ public class SecurityConfig extends WebMvcConfigurationSupport {
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/hamroDaraz/auth/**").permitAll()
-                        .requestMatchers("/shop/**").authenticated()
+                        .requestMatchers("/shop/**").permitAll()
                 )
 //                .authorizeHttpRequests((auth) -> auth
 //                        .requestMatchers("/api/v1/user/{userId}").authenticated()

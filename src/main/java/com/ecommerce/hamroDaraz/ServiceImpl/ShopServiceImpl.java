@@ -27,19 +27,63 @@ public class ShopServiceImpl implements ShopService {
     private UserRepo userRepository;
     @Autowired
     private ShopRepo shopRepository;
- @Override
+
+    @Override
     public ShopRegisterResponse registerShop(ShopRegisterRequest request,String userToken) {
-     String token = userToken.replaceAll("Bearer", " ").trim();
-     Long userId = jwtTokenHelper.extractUserIdFromToken(token);
-     System.out.println("UserId found: "+userId);
-     User user = userRepository.findById(userId)
+    Long userId = findUserIdFromToken(userToken);
+    User user = userRepository.findById(userId)
              .orElseThrow(() -> new RuntimeException("User Not Found"));
 
-     Shop shop = modelMapper.map(request, Shop.class);
-     shop.setCreatedAt(LocalDateTime.now());
-     shop.setUser(user);
-     Shop savedShop = shopRepository.save(shop);
-     ShopRegisterResponse response = modelMapper.map(savedShop, ShopRegisterResponse.class);
-     return response;
+    Shop shop = modelMapper.map(request, Shop.class);
+    shop.setCreatedAt(LocalDateTime.now());
+    shop.setUser(user);
+    Shop savedShop = shopRepository.save(shop);
+    ShopRegisterResponse response = modelMapper.map(savedShop, ShopRegisterResponse.class);
+    return response;
  }
+
+    @Override
+    public ShopRegisterResponse getDetails(Long userId) {
+        Shop response = shopRepository.findByUserId(userId);
+        return modelMapper.map(response, ShopRegisterResponse.class);
+    }
+
+    @Override
+    public ShopRegisterResponse update(String token, ShopRegisterRequest request) {
+       Long userId = findUserIdFromToken(token);
+       Shop updatedShop = shopRepository.findByUserId(userId);
+       if (request.getContactInfo()!=null) {
+           updatedShop.setContactInfo(request.getContactInfo());
+       }
+       if(request.getDescription()!=null) {
+           updatedShop.setDescription(request.getDescription());
+       }
+       if (request.getName()!=null) {
+           updatedShop.setName(request.getName());
+       }
+       if(request.getLogoUrl()!=null) {
+           updatedShop.setLogoUrl(request.getLogoUrl());
+       }
+       updatedShop.setUpdatedAt(LocalDateTime.now());
+
+       shopRepository.save(updatedShop);
+       return modelMapper.map(updatedShop, ShopRegisterResponse.class);
+
+    }
+
+//    @Override
+//    public String deleteShop(String token) {
+//        Long userId = findUserIdFromToken(token);
+//        Shop shop = shopRepository.findByUserId(userId)
+//                .orElseThrow(() -> new IllegalArgumentException("Shop not found for User ID: " + userId));
+//        shopRepository.delete(shop);
+//        return ""
+//    }
+
+   private Long findUserIdFromToken(String token) {
+        String trimmedToken = token.replaceAll("Bearer", " ").trim();
+        Long userId = jwtTokenHelper.extractUserIdFromToken(trimmedToken);
+//        System.out.println("UserId found: "+userId);
+        return userId;
+    }
 }
