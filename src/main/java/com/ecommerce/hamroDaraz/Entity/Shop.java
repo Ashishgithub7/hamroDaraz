@@ -1,6 +1,7 @@
 package com.ecommerce.hamroDaraz.Entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -49,6 +50,7 @@ public class Shop {
     private String description;
 
     @OneToOne
+    @JsonIgnore
     @JoinColumn(name = "user-id")
     private User user;
 

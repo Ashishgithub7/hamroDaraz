@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 public interface ShopService {
     ShopRegisterResponse registerShop(ShopRegisterRequest request, String token);
 
-    ShopRegisterResponse getDetails(Long userId);
+    ResponseEntity<?> getDetails(Long userId);
 
     ShopRegisterResponse update(String token, ShopRegisterRequest request);
 
-    String deleteShop(String token);
+    ResponseEntity<?> deleteShop(String token);
 }

@@ -40,8 +40,8 @@ public class ShopController {
     }
 
     @DeleteMapping("/delete")
-    public String deleteShop(@RequestHeader(value = "Authorization")String token){
+    public ResponseEntity<?> deleteShop(@RequestHeader(value = "Authorization")String token){
         System.out.println("shop delete api hit");
-        return shopService.deleteShop(token);
+        return ResponseEntity.ok(shopService.deleteShop(token));
     }
 }
