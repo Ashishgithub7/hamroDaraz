@@ -1,7 +1,7 @@
 package com.ecommerce.hamroDaraz.ServiceImpl;
 
 import com.ecommerce.hamroDaraz.Config.JwtTokenHelper;
-import com.ecommerce.hamroDaraz.CustomException.ResourceNotFoundException;
+import com.ecommerce.hamroDaraz.CustomExceptionHandler.ResourceNotFoundException;
 import com.ecommerce.hamroDaraz.DTO.ShopRegisterRequest;
 import com.ecommerce.hamroDaraz.DTO.ShopRegisterResponse;
 import com.ecommerce.hamroDaraz.Entity.Shop;
@@ -9,7 +9,6 @@ import com.ecommerce.hamroDaraz.Entity.User;
 import com.ecommerce.hamroDaraz.Repository.ShopRepo;
 import com.ecommerce.hamroDaraz.Repository.UserRepo;
 import com.ecommerce.hamroDaraz.Service.ShopService;
-import jakarta.annotation.Resource;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Map;
-import java.util.Optional;
 
 @Service
 public class ShopServiceImpl implements ShopService {
@@ -38,7 +36,7 @@ public class ShopServiceImpl implements ShopService {
     public ShopRegisterResponse registerShop(ShopRegisterRequest request,String userToken) {
     Long userId = findUserIdFromToken(userToken);
     User user = userRepository.findById(userId)
-             .orElseThrow(() -> new RuntimeException("User Not Found"));
+             .orElseThrow(() -> new ResourceNotFoundException("User","UserID", userId));
 
     Shop shop = modelMapper.map(request, Shop.class);
     shop.setCreatedAt(LocalDateTime.now());
@@ -50,18 +48,10 @@ public class ShopServiceImpl implements ShopService {
 
     @Override
     public ResponseEntity<?> getDetails(Long userId) {
-
-        try{
         Shop response = shopRepository.findByUserId(userId)
                 .orElseThrow(()-> new ResourceNotFoundException("Shop","UserID",userId));
         return ResponseEntity.status(HttpStatus.OK).body(Map.of("Shop",response));
-        }
-        catch(ResourceNotFoundException e){
-            return ResponseEntity.status(HttpStatus.OK).body(Map.of("message",e.getMessage()));
-        }
-
     }
-
 
     @Override
     public ShopRegisterResponse update(String token, ShopRegisterRequest request) {

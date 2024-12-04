@@ -1,6 +1,7 @@
 package com.ecommerce.hamroDaraz.ServiceImpl;
 
 import com.ecommerce.hamroDaraz.Config.JwtTokenHelper;
+import com.ecommerce.hamroDaraz.CustomExceptionHandler.ResourceNotFoundException;
 import com.ecommerce.hamroDaraz.DTO.UserDTO;
 import com.ecommerce.hamroDaraz.Entity.Cart;
 import com.ecommerce.hamroDaraz.DTO.LoginRequest;
@@ -71,36 +72,39 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<?> userLogin(LoginRequest request) {
 
-        Optional<User> theUser = userRepo.findByEmail(request.getEmail());
+        User theUser = userRepo.findByEmail(request.getEmail())
+                .orElseThrow(()-> new ResourceNotFoundException("User","Email",request.getEmail()));
         UserLoginResponse response = new UserLoginResponse();
-        if(theUser.isPresent()){
-            User user = theUser.get();
-            System.out.println((user.getEmail()));
-
-            try {
+//        if(theUser.isPresent()){
+//            User user = theUser.get();
+//            System.out.println((user.getEmail()));
+//
+//            try {
                 Authentication authentication = authenticationManager.authenticate(
                         new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
                 );
                 if (authentication.isAuthenticated()) {
-                    response=modelMapper.map(user,UserLoginResponse.class);
-                    response.setToken(jwtTokenHelper.generateToken(user.getEmail(), "user",user.getId()));
+                    response=modelMapper.map(theUser,UserLoginResponse.class);
+                    response.setToken(jwtTokenHelper.generateToken(theUser.getEmail(), "user",theUser.getId()));
                     response.setMessage("Login successful");
-                    response.setUserId(user.getId());
+                    response.setUserId(theUser.getId());
                     return new ResponseEntity<>(response, HttpStatus.OK);
                 } else {
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                            .body(Map.of("status", "error", "message", "Invalid email or password. Please try again else"));
-                }
+                            .body(Map.of("status", "error", "message", "Invalid email or password. Please try again."));
+//                }
 
-            }catch(AuthenticationException e){
-                return  ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body(Map.of("status", "error", "message", "Invalid email or password. Please try again."));
-            }
+//            }catch(AuthenticationException e){
+//                return  ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+//                        .body(Map.of("status", "error", "message", "Invalid email or password. Please try again."));
+//            }
         }
-        else{
-//            logInfo.error("User not found");
-            return  ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(Map.of("status","error","message","user not found"));
-        }
+//        else{
+////            logInfo.error("User not found");
+//            return  ResponseEntity.status(HttpStatus.NOT_FOUND)
+//                    .body(Map.of("status","error","message","user not found"));
+//        }
+
+//        EVERY LINE COMMENTED ABOVE IS ALTERNATE OF THE GLOBAL EXCEPTION HANDLING
     }
 }
