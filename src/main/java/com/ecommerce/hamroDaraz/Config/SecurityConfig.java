@@ -94,7 +94,7 @@ public class SecurityConfig extends WebMvcConfigurationSupport {
                 .csrf(csrf -> csrf.disable())
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/hamroDaraz/auth/**").permitAll()
+                        .requestMatchers("/**").permitAll()
                         .requestMatchers("/shop/**").permitAll()
                 )
 //                .authorizeHttpRequests((auth) -> auth
