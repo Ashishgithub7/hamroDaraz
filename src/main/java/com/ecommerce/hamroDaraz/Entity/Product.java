@@ -2,10 +2,7 @@ package com.ecommerce.hamroDaraz.Entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,15 +33,13 @@ public class Product {
     private String description;
 
     @NotNull(message = "Product's stock should be listed")
-    @NotBlank(message = "Enter total stocks available")
-    @Size(min=1,message = "Stock should be minimum 1")
-    @Pattern(regexp="^[0-9]+$",message = "Invalid stock size. Stock should be in number")
+    @PositiveOrZero(message = "Stock size should be positive or zero")
+//    @Pattern(regexp="^[0-9]+$",message = "Invalid stock size. Stock should be in number")
     private Long stock;
 
     @NotNull(message = "Product's price should be listed")
-    @NotBlank(message = "Enter product's price")
-    @Size(min=1,message="Price should be at least 1")
-    @Pattern(regexp="^[0-9]+$",message = "Price should be in number")
+    @PositiveOrZero(message = "Price should be positive or zero")
+//    @Pattern(regexp="^[0-9]+$",message = "Price should be in number")
     private Long price;
 
     private String imageUrl;

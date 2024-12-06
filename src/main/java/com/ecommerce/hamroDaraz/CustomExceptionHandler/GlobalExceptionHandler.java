@@ -35,6 +35,18 @@ import java.util.Map;
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exceptionDTO);
         }
 
+//      This exception is invoked whenever resourceAlreadyExistsException occurs
+        @ExceptionHandler(ResourceAlreadyExistsException.class)
+        public ResponseEntity<ExceptionResponseDTO> handleResourceAlreadyExistsException(ResourceAlreadyExistsException ex, WebRequest request) {
+            ExceptionResponseDTO exceptionDTO = new ExceptionResponseDTO(
+                    webRequest.getDescription(false),
+                    HttpStatus.CONFLICT,
+                    ex.getMessage(),
+                    LocalDateTime.now()
+            );
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(exceptionDTO);
+        }
+
         //@Valid uses this method
         @ExceptionHandler(MethodArgumentNotValidException.class)
         public ResponseEntity<?>handleMethodArgumentNotValidException(MethodArgumentNotValidException ex)
@@ -48,6 +60,7 @@ import java.util.Map;
             });
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resp);
         }
+
 
         //Catching any other exception globally
         //handle globalexception i.e juna sukai exception pani handle gardenxa if exception handle garana class haru or method pahila hainxa vanew

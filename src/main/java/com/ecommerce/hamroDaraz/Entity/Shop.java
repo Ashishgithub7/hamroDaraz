@@ -55,7 +55,7 @@ public class Shop {
     @JoinColumn(name = "user-id")
     private User user;
 
-    @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL,orphanRemoval = true,fetch = FetchType.EAGER)
     private List<Product> products;
 
 
