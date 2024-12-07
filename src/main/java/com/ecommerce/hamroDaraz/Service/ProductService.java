@@ -8,4 +8,6 @@ import org.springframework.stereotype.Service;
 @Service
 public interface ProductService {
     ResponseEntity<?> addProduct(ProductDTO productDto);
+
+    ResponseEntity<?> deleteProduct(Long shopId, String productName);
 }
